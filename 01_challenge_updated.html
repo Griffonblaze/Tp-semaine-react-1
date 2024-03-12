@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@latest/babel.min.js"></script>
+    <style>
+        .heading {
+            color: purple;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- <script>alert('XSS')</script> -->
+
+    <script type="text/babel">
+
+        const numbersArray = [
+            4, 14, 20, 6, 11, 12, 13,
+            5, 16, 10, 3, 15, 2, 18,
+            19, 8, 17, 1, 9, 7
+        ]
+
+
+
+        const Numbers = ({ numbers:num }) => {
+
+            const [numbers, setNumbers] = React.useState(num)
+
+            const ascendingArray = () =>{
+                const newNumbers = numbers.map(e => e)
+                newNumbers.sort((a, b) => a - b)
+                setNumbers(newNumbers)
+            }
+            const descendingArray = () =>{
+                const newNumbers = numbers.map(e => e)
+                newNumbers.sort((a, b) => b - a)
+                setNumbers(newNumbers)
+            }
+
+            const orderName = (order) => {
+                if (order == 1) return 'ordre croissant'
+                else return 'ordre décroissant'
+            }
+
+
+            return (
+                <div>
+                    <p>{numbers.map((num, i) =>
+                        <span key={i}> {num} </span>
+                    )}
+                    </p>
+                    <button onClick={ascendingArray}>{orderName(1)}</button>
+                    <button onClick={descendingArray}>{orderName(-1)}</button>
+                </div>
+            )
+        }
+
+        const Clock = (props) => {
+
+            const [timer, setTimer] = React.useState(new Date())
+
+            const updateTime = () => setTimer(new Date())
+
+            setInterval(updateTime,1000)
+            clearInterval(updateTime,1000)
+
+            return (
+                <div>
+                    {timer.getHours()}h {timer.getMinutes()}m {timer.getSeconds()}s
+                </div>
+            )
+        }
+
+        function App(props) {
+
+
+            return (
+                <div style={{ textAlign: 'center', padding: '2px' }}>
+                    <Numbers numbers={props.array} />
+                    <Clock />
+                </div>
+            )
+        };
+
+        // Rendu dans le DOM
+        const root = document.getElementById('root')
+        const mainRoot = ReactDOM.createRoot(root)
+        mainRoot.render(<App array={numbersArray} />)
+
+    </script>
+</body>
+
+</html>
