@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@latest/babel.min.js"></script>
+
+
+
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- <script>alert('XSS')</script> -->
+
+    <script type="text/babel">
+
+        const NumberInput = ({ number, setNumber }) => {
+
+            const handleChange = (event) => {
+                setNumber(event.target.value)
+            }
+
+            return (
+                <div>
+                    <input type="text" onChange={handleChange} value={number} />
+                </div>
+            )
+        }
+
+        const Button = ({ buttonType, number1, number2, changeResult, changeCounter }) => {
+            const [sign, setSign] = React.useState(buttonType)
+
+            const handleClick = () => {
+                const operationResult = validOperation(number1, number2, sign)
+                if (operationResult === false) {
+                    changeResult(`Le calcul ${number1}${buttonType}${number2} est invalide, veuillez réessayer!`)
+                }
+                else {
+                    changeResult(operationResult)
+                    changeCounter()
+                }
+            }
+            const validOperation = (a, b, sign) => {
+                switch (sign) {
+                    case '+':
+                        if (isNaN(parseFloat(a) + parseFloat(b)))
+                            return false
+                        else return parseFloat(a) + parseFloat(b)
+                        break;
+                    case '*':
+                        if (isNaN(parseFloat(a) * parseFloat(b)))
+                            return false
+                        else return parseFloat(a) * parseFloat(b)
+                        break;
+                }
+            }
+
+            const resetResult = () => {
+                changeResult('')
+            }
+
+            if (buttonType != 'reset') {
+
+                return (
+                    <div>
+                        <button onClick={handleClick}>{sign}</button>
+                    </div>
+                )
+            }
+            else{
+                return(
+                    <div>
+                        <button onClick={resetResult}>{sign}</button>
+                        </div>
+                )
+            }
+        }
+
+        function App({ numbers }) {
+
+            const [firstNumber, setFirstNumber] = React.useState('')
+            const [secondNumber, setSecondNumber] = React.useState('')
+            //compteur du nombre de calculs réalisés
+            const [result, setResult] = React.useState('')
+            const [counter, setCounter] = React.useState(0)
+            const [phrase, setPhrase] = React.useState('')
+
+            const updateCounter = () => {
+                setCounter(counter => counter + 1)
+            }
+
+            React.useEffect(() => {
+                if (counter % 10 == 0 && counter != 0) {
+                    setPhrase(`Bravo, vous avez fait ${counter} calculs!`)
+                }
+            }, [counter])
+
+            React.useEffect(() => {
+                setFirstNumber('')
+                setSecondNumber('')
+            }, [result])
+
+            return (
+                <div>
+                    <p>
+                        Résultat : {result}
+                    </p>
+
+                    <p>Premier Nombre</p>
+                    <NumberInput number={firstNumber} setNumber={setFirstNumber} />
+                    <p>Deuxième Nombre</p>
+                    <NumberInput number={secondNumber} setNumber={setSecondNumber} />
+                    <Button buttonType='+' number1={firstNumber} number2={secondNumber} changeResult={setResult} changeCounter={updateCounter} />
+                    <Button buttonType='*' number1={firstNumber} number2={secondNumber} changeResult={setResult} changeCounter={updateCounter} />
+                    <Button buttonType='reset' changeResult={setResult} />
+                    <p>
+                        Nombre de calculs : {counter}
+                    </p>
+                    <p>
+                        {phrase}
+                    </p>
+                </div>
+            )
+
+
+        };
+
+        // Rendu dans le DOM
+        ReactDOM.createRoot(document.getElementById('root')).render(
+            <App />
+        );
+    </script>
+</body>
+
+</html>
