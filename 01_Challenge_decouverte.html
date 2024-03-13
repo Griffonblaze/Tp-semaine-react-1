@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@latest/babel.min.js"></script>
+
+
+
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- <script>alert('XSS')</script> -->
+
+    <script type="text/babel">
+
+        const phrasesArray = [
+        'Malheur à ceux qui se contentent de peu.'
+        ]
+
+        const AddPhrase = ({ensemble, setEnsemble}) => {
+
+            const [phrase,setPhrase] = React.useState('')
+
+            const addPhrase = () => {
+                const newEnsemble = ensemble.map(ph => ph)
+                newEnsemble.push(phrase)
+                setPhrase('')
+                setEnsemble(newEnsemble)
+            }
+
+            const handleChange = (event) => {
+                setPhrase(event.target.value)
+            }
+
+            return(
+            <div>
+                <input type="text" value={phrase} onChange={handleChange}/>
+                <button onClick={addPhrase}>Add Phrase</button>
+            </div>
+            )
+
+        }
+
+       
+        function App(props) {
+
+            const [ensemblePhrases, setEnsemblePhrases] = React.useState(props.phrases)
+
+            const HandleEnsembleChange = (newEnsemble) => {
+                setEnsemblePhrases(newEnsemble)
+            }
+
+
+            return(
+                <div>
+                    <AddPhrase ensemble={ensemblePhrases} setEnsemble={HandleEnsembleChange}/>
+
+                    <div>
+                        {ensemblePhrases.map((phrase,i) => <p key={i}>{phrase}</p> )}
+                    </div>
+                </div>
+            )
+        };
+
+        // Rendu dans le DOM
+        const root = document.getElementById('root')
+        const mainRoot = ReactDOM.createRoot(root)
+        mainRoot.render(<App phrases={phrasesArray}/>)
+    </script>
+</body>
+
+</html>
