@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
+    <script src="https://unpkg.com/babel-standalone@latest/babel.min.js"></script>
+    <style>
+
+        body{
+            background-color: #D9D9D9;
+        }
+
+        form {
+            background-color: #9A9A9A;
+            width: 50%;
+            margin: auto;
+            padding: 50px;
+        }
+        form div{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        form p{
+            font-size: 20px;
+        }
+
+        form > p{
+            display: flex;
+            justify-content: space-between;
+        }
+
+        form > p span{
+            background-color: bisque;
+            display: block;
+            width: 50%;
+            height: 30px;
+            overflow: hidden;
+        }
+
+        form input, form select{
+            width: 50%;
+            height: 30px;
+            
+        }
+
+        form button[type='submit']{
+            display: block;
+            width: 30%;
+            height: 40px;
+            margin: auto;
+            border-radius: 15px;
+        }
+
+        #root > div{
+            background-color: white;
+            width: 50%;
+            margin: 20px auto;
+            padding: 50px;
+        } 
+
+        #root > div > p {
+            text-align: center;
+        }
+
+        #root > div > button{
+            display: block;
+            width: 30%;
+            height: 40px;
+            margin: auto;
+            border-radius: 15px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- <script>alert('XSS')</script> -->
+
+    <script type="text/babel">
+
+        //tailles proposées par l'appli
+        const tailles = []
+        for (let i = 15; i < 21; i++) {
+            tailles.push(`${i}px`)
+        }
+
+        //couleurs proposées par l'appli
+        const colors = ['palevioletred', 'tomato']
+        //incrémenteur pour générer l'id du texte (afin de pouvoir le supprimer)
+        let textId=0
+
+        const initialState = {
+            taille: tailles[0],
+            style: colors[0],
+            text: '',
+            texts: [],
+            error: ''
+        }
+
+        function reducer(state, action) {
+            switch (action.type) {
+                case 'text':
+                    return{
+                        ...state,
+                        text:action.value
+                    }
+                    break;
+
+                case 'couleur':
+                    return{
+                        ...state,
+                        style:action.value
+                    }
+                    break;
+
+                case 'taille':
+                    return{
+                        ...state,
+                        taille:action.value
+                    }
+                    break;
+
+                case 'submit':
+                    if(state.text.trim()==''){
+                        return {
+                            ...state, error:'Le texte est vide'
+                        }
+                    }
+                    if(!tailles.includes(state.taille)){
+                        return{
+                            ...state, error:'La taille sélectionnée ne fait pas partie de la liste'
+                        }
+                    }
+                    if(!colors.includes(state.style)){
+                        return{
+                            ...state, error: 'la couleur sélectionnée ne fait pas partie de la liste'
+                        }
+                    }
+                    const newTexts = state.texts.map(text => text)
+                    newTexts.push({
+                        id:textId,
+                        taille:state.taille,
+                        style:state.style,
+                        text:state.text
+                    })
+                    textId = textId+1
+                    return{
+                        ...state,
+                        text:'',
+                        texts: newTexts,
+                        error:''
+                    }
+                    break;
+
+                case 'delete':
+                    const arrayTexts = state.texts.map(text => text)
+                    const newArray = arrayTexts.filter(text => text.id != action.id)
+                    return{
+                        ...state,
+                        texts: newArray
+                    }
+                    break;
+
+            }
+            return { ...state, error:'Une erreur est survenue, veuillez réessayer' }
+        }
+
+        const Select = ({dispatch,type,choices}) =>{
+            const handleChange = (event) => {
+                const value = event.target.value
+                dispatch({type:type,value:value})
+            }
+
+            return (
+                <div>
+                    <p>Changez votre {type} : 
+
+                        </p>
+                        <select onChange={handleChange}>
+                            {choices.map((choice,i) => 
+                                <option value={choice} key={i}>{choice}</option>
+                            )}
+                        </select>
+                </div>
+            )
+        }
+
+        const Texte = ({dispatch,text}) => {
+
+            const handleChange = (event) => {
+                const text = event.target.value
+                dispatch({type:'text',value:text})
+            }
+
+            return (
+                <div>
+                    <p>Saisir le texte : </p>
+                    <input type="text" onChange={handleChange} value={text}/>
+                </div>
+            )
+        }
+
+        const Form = ({dispatch,text,style,taille}) => {
+            const handleSubmit = (event) => {
+                event.preventDefault()
+                dispatch({type:'submit'})
+            }
+            return (
+                <form onSubmit={handleSubmit}>
+                    <Texte dispatch={dispatch} text={text}/>
+                    <Select dispatch={dispatch} choices={tailles} type='taille'/>
+                    <Select dispatch={dispatch} choices={colors} type='couleur'/>
+                    <p>Aperçu du rendu : <span style={{color:style,fontSize:taille}}>{text}</span> </p>
+                    <button type="submit">Valider</button>
+                </form>
+            )
+        }
+
+        const Render = ({texts,dispatch}) => {
+            const handleClick = (id) => {
+                dispatch({type:'delete',id:id})
+            }
+            return(
+            <React.Fragment>
+                {texts.map((text,i) =>
+                    <div key={i}>
+                        <p style={{color:text.style,fontSize:text.taille}}>{text.text}</p>
+                        <button onClick={()=>handleClick(text.id)}>Supprimer le texte</button>
+                    </div>    
+                )}
+            </React.Fragment>
+            )
+
+        }
+
+
+        function App() {
+            const [state, dispatch] = React.useReducer(reducer, initialState)
+            const {style, text, texts, taille, error} = state
+
+            //voit les données en temps réel dans la console
+            React.useEffect(() =>{
+                console.log(state);
+            },[style,text,texts,taille])
+
+            return (
+                <React.Fragment>
+                    <p>{error}</p>
+                    <Form dispatch={dispatch} text={text} style={style} taille={taille}/>
+                    <Render dispatch={dispatch} texts={texts}/>
+                </React.Fragment>
+            )
+
+        }
+
+
+
+        ReactDOM.createRoot(document.getElementById('root')).render(
+            <App />
+        );
+    </script>
+</body>
+
+</html>
