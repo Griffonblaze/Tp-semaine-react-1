@@ -77,6 +77,19 @@
             border-radius: 15px;
         }
 
+        .error{
+            background-color: salmon;
+            width: 50%;
+            margin: 10px auto ;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 30px;
+        }
+
+        .active{
+            padding: 10px 50px;
+        }
+
     </style>
 </head>
 
@@ -254,7 +267,7 @@
 
             return (
                 <React.Fragment>
-                    <p className='error'>{error}</p>
+                    <p className={`error ${error? 'active' : ''}`}>{error}</p>
                     <Form dispatch={dispatch} text={text} style={style} taille={taille}/>
                     <Render dispatch={dispatch} texts={texts}/>
                 </React.Fragment>
