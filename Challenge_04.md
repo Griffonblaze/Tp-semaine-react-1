@@ -1,4 +1,4 @@
-# 04 Challenge: projet
+# 04_Challenge: projet
 
 ## 1. Présentation
 
@@ -48,3 +48,29 @@ de ne pas avoir à les écrire manuellement,
 2. Un tableau contenant des couleurs pré-définies, écrites manuellement dû à leur nom spécifique
 3. Un incrémenteur qui servira pour la fonction de suppression d'un message
 4. Un état initial au démarrage de l'application
+
+
+### 2.2. Initialisation
+
+L'application est générée à partir d'un composant unique App, qui est la fusion de
+plusieurs composants.
+
+```js
+function App() {
+            const [state, dispatch] = React.useReducer(reducer, initialState)
+            const {style, text, texts, taille, error} = state
+
+            //voit les données en temps réel dans la console
+            React.useEffect(() =>{
+                console.log(state);
+            },[style,text,texts,taille])
+
+            return (
+                <React.Fragment>
+                    <p className='error'>{error}</p>
+                    <Form dispatch={dispatch} text={text} style={style} taille={taille}/>
+                    <Render dispatch={dispatch} texts={texts}/>
+                </React.Fragment>
+            )
+        }
+```

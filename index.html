@@ -254,12 +254,11 @@
 
             return (
                 <React.Fragment>
-                    <p>{error}</p>
+                    <p className='error'>{error}</p>
                     <Form dispatch={dispatch} text={text} style={style} taille={taille}/>
                     <Render dispatch={dispatch} texts={texts}/>
                 </React.Fragment>
             )
-
         }
 
 
