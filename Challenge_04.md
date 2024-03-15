@@ -14,4 +14,30 @@ Cette application web est réalisée sur une page simple et utilise
 de l'HTML/CSS pour la mise en page, ainsi que React pour toute la 
 structure qui s'occupe de l'interaction avec l'utilisateur. 
 
-# 
+### 2.1. Initialisation
+
+Ici, nous allons voir tous nos composants qui vont définir les paramètres
+de l'application. Voici la partie représentant ceci.
+
+```js
+//tailles proposées par l'application
+const tailles = []
+for (let i = 15; i < 21; i++) {
+    tailles.push(`${i}px`)
+}
+
+//couleurs proposées par l'appli
+const colors = ['palevioletred', 'tomato']
+
+//incrémenteur pour générer l'id du texte
+let textId=0
+
+//état initial
+const initialState = {
+    taille: tailles[0],
+    style: colors[0],
+    text: '',
+    texts: [],
+    error: ''
+}
+```
