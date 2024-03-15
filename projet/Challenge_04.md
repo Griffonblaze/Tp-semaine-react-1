@@ -142,4 +142,7 @@ Affichage d'un message après avoir validé le formulaire :
 ![props top/down](./src/img/sauvegarde_message.png)
 
 
-## 3. Démonstration
+## 4. Conclusion
+
+Ce projet est une gestion simple de données: il en sauvegarde, en affiche et en supprime. 
+La structure de ce dernier permet de faire de rapides ajouts de fonctionnalités, mais actuellement ne permet pas de vraiment customiser son message. On pourrait ajouter une échelle d'importance pour afficher les textes dans un certain ordre, mettre plus de possibilités lors de la rédaction de messages, comme mettre celui-ci en gras / souligner du contenu, ou encore modifier les messages sauvegardés, afin que l'application soit un peu plus développée.
