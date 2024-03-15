@@ -43,8 +43,8 @@ const initialState = {
 ```
 
 Nous en avons actuellement 4: 
--Un tableau contenant les tailles, elles sont générées à partir d'une boucle afin
+1. Un tableau contenant les tailles, elles sont générées à partir d'une boucle afin
 de ne pas avoir à les écrire manuellement,
--Un tableau contenant des couleurs pré-définies, écrites manuellement dû à leur nom spécifique
--Un incrémenteur qui servira pour la fonction de suppression d'un message
--Un état initial au démarrage de l'application
+2. Un tableau contenant des couleurs pré-définies, écrites manuellement dû à leur nom spécifique
+3. Un incrémenteur qui servira pour la fonction de suppression d'un message
+4. Un état initial au démarrage de l'application
